@@ -1,4 +1,11 @@
 package com.svetomir.spendly.data.local
 
-class Category {
+enum class Category(val label: String) {
+    FOOD("Food"),
+    TRANSPORT("Transport"),
+    SHOPPING("Shopping"),
+    BILLS("Bills"),
+    ENTERTAINMENT("Entertainment"),
+    HEALTH("Health"),
+    OTHER("Other"),
 }
