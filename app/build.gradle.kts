@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
+    jacoco
 }
 
 detekt {
@@ -39,6 +40,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+        }
         release {
             optimization {
                 enable = true
@@ -79,10 +83,61 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.leakcanary.android)
+}
+
+// Coverage report for unit tests: ./gradlew jacocoTestReport
+// Output: app/build/reports/jacoco/jacocoTestReport/html/index.html
+val coverageExclusions = listOf(
+    "**/R.class",
+    "**/R$*.class",
+    "**/BuildConfig.*",
+    "**/Manifest*.*",
+    "**/*Test*.*",
+    "**/Hilt_*.*",
+    "**/*_Hilt*.*",
+    "**/*_Factory*.*",
+    "**/*_MembersInjector*.*",
+    "**/*_Impl*.*",
+    "**/hilt_aggregated_deps/**",
+    "**/dagger/**",
+    "**/*ComposableSingletons*.*",
+    "**/ui/theme/**",
+)
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+    }
+    val buildDir = layout.buildDirectory
+    classDirectories.setFrom(
+        fileTree(buildDir.dir("intermediates")) {
+            include(
+                "**/compileDebugKotlin/classes/**",
+                "**/compileDebugJavaWithJavac/classes/**",
+            )
+            exclude(coverageExclusions)
+        },
+    )
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+    executionData.setFrom(
+        fileTree(buildDir) {
+            include("outputs/unit_test_code_coverage/debugUnitTest/*.exec")
+        },
+    )
 }
