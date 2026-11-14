@@ -14,15 +14,6 @@ detekt {
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
 }
 
-// detekt 1.23.x is built with Kotlin 2.0.21; keep its own classpath on that version
-configurations.matching { it.name == "detekt" }.configureEach {
-    resolutionStrategy.eachDependency {
-        if (requested.group == "org.jetbrains.kotlin") {
-            useVersion("2.0.21")
-        }
-    }
-}
-
 android {
     namespace = "com.svetomir.spendly"
     compileSdk {

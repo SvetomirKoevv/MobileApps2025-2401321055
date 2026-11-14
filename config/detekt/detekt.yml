@@ -16,5 +16,5 @@ style:
     # Allows colour constants such as val Purple80 = Color(0xFFD0BCFF)
     ignorePropertyDeclaration: true
     ignoreAnnotated: ['Preview']
-  UnusedPrivateMember:
+  UnusedPrivateFunction:
     ignoreAnnotated: ['Preview']
