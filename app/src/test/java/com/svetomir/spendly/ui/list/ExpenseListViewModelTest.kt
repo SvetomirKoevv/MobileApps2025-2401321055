@@ -33,8 +33,8 @@ class ExpenseListViewModelTest {
         viewModel = ExpenseListViewModel(repository)
     }
 
-    private fun expense(title: String, amount: Double) =
-        Expense(title = title, amount = amount, category = Category.FOOD, date = 1_000L)
+    private fun expense(title: String, amount: Double, category: Category = Category.FOOD) =
+        Expense(title = title, amount = amount, category = category, date = 1_000L)
 
     /** uiState only updates while someone collects it (WhileSubscribed), like the screen does. */
     private fun TestScope.collectUiState() {
@@ -135,5 +135,110 @@ class ExpenseListViewModelTest {
 
         assertNull(viewModel.recentlyDeleted.value)
         assertTrue(viewModel.uiState.value.expenses.isEmpty())
+    }
+
+    @Test
+    fun search_filtersByTitleIgnoringCase() = runTest {
+        repository.addExpense(expense("Coffee", 3.5))
+        repository.addExpense(expense("Taxi", 12.0))
+        collectUiState()
+
+        viewModel.onSearchQueryChange("cOf")
+
+        val state = viewModel.uiState.value
+        assertEquals("cOf", state.searchQuery)
+        assertEquals(listOf("Coffee"), state.expenses.map { it.title })
+    }
+
+    @Test
+    fun search_blankQuery_showsEverything() = runTest {
+        repository.addExpense(expense("Coffee", 3.5))
+        repository.addExpense(expense("Taxi", 12.0))
+        collectUiState()
+
+        viewModel.onSearchQueryChange("   ")
+
+        assertEquals(2, viewModel.uiState.value.expenses.size)
+    }
+
+    @Test
+    fun categoryFilter_showsOnlyThatCategory() = runTest {
+        repository.addExpense(expense("Coffee", 3.5, Category.FOOD))
+        repository.addExpense(expense("Taxi", 12.0, Category.TRANSPORT))
+        collectUiState()
+
+        viewModel.onCategorySelected(Category.TRANSPORT)
+
+        val state = viewModel.uiState.value
+        assertEquals(Category.TRANSPORT, state.selectedCategory)
+        assertEquals(listOf("Taxi"), state.expenses.map { it.title })
+    }
+
+    @Test
+    fun categoryFilter_selectingSameCategoryAgain_clearsFilter() = runTest {
+        repository.addExpense(expense("Coffee", 3.5, Category.FOOD))
+        repository.addExpense(expense("Taxi", 12.0, Category.TRANSPORT))
+        collectUiState()
+
+        viewModel.onCategorySelected(Category.TRANSPORT)
+        viewModel.onCategorySelected(Category.TRANSPORT)
+
+        assertNull(viewModel.uiState.value.selectedCategory)
+        assertEquals(2, viewModel.uiState.value.expenses.size)
+    }
+
+    @Test
+    fun categoryFilter_null_showsAllCategories() = runTest {
+        repository.addExpense(expense("Coffee", 3.5, Category.FOOD))
+        repository.addExpense(expense("Taxi", 12.0, Category.TRANSPORT))
+        collectUiState()
+        viewModel.onCategorySelected(Category.FOOD)
+
+        viewModel.onCategorySelected(null)
+
+        assertEquals(2, viewModel.uiState.value.expenses.size)
+    }
+
+    @Test
+    fun searchAndCategory_areCombined() = runTest {
+        repository.addExpense(expense("Bus ticket", 2.0, Category.TRANSPORT))
+        repository.addExpense(expense("Taxi", 12.0, Category.TRANSPORT))
+        repository.addExpense(expense("Bus snack", 1.5, Category.FOOD))
+        collectUiState()
+
+        viewModel.onSearchQueryChange("bus")
+        viewModel.onCategorySelected(Category.TRANSPORT)
+
+        assertEquals(listOf("Bus ticket"), viewModel.uiState.value.expenses.map { it.title })
+    }
+
+    @Test
+    fun total_onlyCountsFilteredExpenses() = runTest {
+        repository.addExpense(expense("Coffee", 3.5, Category.FOOD))
+        repository.addExpense(expense("Taxi", 12.0, Category.TRANSPORT))
+        collectUiState()
+
+        viewModel.onCategorySelected(Category.FOOD)
+
+        assertEquals(3.5, viewModel.uiState.value.total, 0.001)
+    }
+
+    @Test
+    fun noMatches_stillReportsThatExpensesExist() = runTest {
+        repository.addExpense(expense("Coffee", 3.5))
+        collectUiState()
+
+        viewModel.onSearchQueryChange("pizza")
+
+        val state = viewModel.uiState.value
+        assertTrue(state.expenses.isEmpty())
+        assertTrue(state.hasAnyExpenses)
+    }
+
+    @Test
+    fun emptyRepository_hasNoExpenses() = runTest {
+        collectUiState()
+
+        assertFalse(viewModel.uiState.value.hasAnyExpenses)
     }
 }

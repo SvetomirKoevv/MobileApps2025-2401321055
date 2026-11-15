@@ -46,6 +46,17 @@ import com.svetomir.spendly.data.local.Expense
 import com.svetomir.spendly.ui.currency.CurrencyConversionCard
 import com.svetomir.spendly.ui.util.formatAmount
 import com.svetomir.spendly.ui.util.formatDate
+import android.content.Intent
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.platform.LocalContext
+import com.svetomir.spendly.AboutActivity
+import com.svetomir.spendly.data.local.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +71,7 @@ fun ExpenseListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val deletedMessage = stringResource(R.string.expense_deleted)
     val undoLabel = stringResource(R.string.undo)
+    val context = LocalContext.current
 
     LaunchedEffect(recentlyDeleted) {
         if (recentlyDeleted != null) {
@@ -78,7 +90,18 @@ fun ExpenseListScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.app_name)) },
+                actions = {
+                    IconButton(
+                        onClick = { context.startActivity(Intent(context, AboutActivity::class.java)) },
+                    ) {
+                        Icon(Icons.Default.Info, contentDescription = stringResource(R.string.about))
+                    }
+                },
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddClick) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_expense))
@@ -88,6 +111,8 @@ fun ExpenseListScreen(
         ExpenseListContent(
             uiState = uiState,
             onExpenseClick = onExpenseClick,
+            onSearchQueryChange = viewModel::onSearchQueryChange,
+            onCategorySelected = viewModel::onCategorySelected,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -97,6 +122,8 @@ fun ExpenseListScreen(
 private fun ExpenseListContent(
     uiState: ExpenseListUiState,
     onExpenseClick: (Long) -> Unit,
+    onSearchQueryChange: (String) -> Unit,
+    onCategorySelected: (Category?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when {
@@ -104,22 +131,31 @@ private fun ExpenseListContent(
             CircularProgressIndicator()
         }
 
-        uiState.expenses.isEmpty() -> EmptyState(modifier)
+        !uiState.hasAnyExpenses -> EmptyState(modifier)
 
         else -> LazyColumn(
             modifier = modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            item { SearchField(query = uiState.searchQuery, onQueryChange = onSearchQueryChange) }
+            item {
+                CategoryFilter(
+                    selected = uiState.selectedCategory,
+                    onCategorySelected = onCategorySelected,
+                )
+            }
             item { TotalCard(total = uiState.total) }
             item { CurrencyConversionCard(totalInEur = uiState.total) }
+            if (uiState.expenses.isEmpty()) {
+                item { NoResults() }
+            }
             items(items = uiState.expenses, key = { it.id }) { expense ->
                 ExpenseItem(expense = expense, onClick = { onExpenseClick(expense.id) })
             }
         }
     }
 }
-
 @Composable
 private fun TotalCard(total: Double) {
     Card(
@@ -190,4 +226,59 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
+}
+
+@Composable
+private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { Text(stringResource(R.string.search_hint)) },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = { onQueryChange("") }) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = stringResource(R.string.clear_search),
+                    )
+                }
+            }
+        },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
+private fun CategoryFilter(selected: Category?, onCategorySelected: (Category?) -> Unit) {
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        item {
+            FilterChip(
+                selected = selected == null,
+                onClick = { onCategorySelected(null) },
+                label = { Text(stringResource(R.string.all_categories)) },
+            )
+        }
+        items(Category.entries) { category ->
+            FilterChip(
+                selected = category == selected,
+                onClick = { onCategorySelected(category) },
+                label = { Text(category.label) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun NoResults() {
+    Text(
+        text = stringResource(R.string.no_results),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 24.dp),
+    )
 }

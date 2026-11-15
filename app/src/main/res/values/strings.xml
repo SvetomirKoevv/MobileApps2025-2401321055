@@ -30,4 +30,13 @@
     <string name="rates_error">Couldn\'t load exchange rates. Check your internet connection.</string>
     <string name="retry">Retry</string>
     <string name="rates_date">ECB rates from %1$s</string>
+    <string name="search_hint">Search expenses</string>
+    <string name="clear_search">Clear search</string>
+    <string name="all_categories">All</string>
+    <string name="no_results">No expenses match your search</string>
+    <string name="share_expense">Share expense</string>
+    <string name="about">About</string>
+    <string name="about_description">Spendly helps you track daily expenses, see your total and convert it to other currencies.</string>
+    <string name="about_rates_source">Exchange rates: European Central Bank via the Frankfurter API</string>
+    <string name="about_course">Course project · Mobile Applications</string>
 </resources>

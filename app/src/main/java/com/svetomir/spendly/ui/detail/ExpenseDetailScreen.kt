@@ -36,6 +36,8 @@ import com.svetomir.spendly.R
 import com.svetomir.spendly.data.local.Expense
 import com.svetomir.spendly.ui.util.formatAmount
 import com.svetomir.spendly.ui.util.formatDate
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +50,7 @@ fun ExpenseDetailScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
     val expense = uiState.expense
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -63,6 +66,12 @@ fun ExpenseDetailScreen(
                 },
                 actions = {
                     if (expense != null) {
+                        IconButton(onClick = { shareExpense(context, expense) }) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = stringResource(R.string.share_expense),
+                            )
+                        }
                         IconButton(onClick = { onEdit(expense.id) }) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
