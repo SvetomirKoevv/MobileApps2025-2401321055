@@ -1,5 +1,6 @@
 package com.svetomir.spendly.ui.list
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,17 +13,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -36,27 +44,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.svetomir.spendly.AboutActivity
 import com.svetomir.spendly.R
+import com.svetomir.spendly.data.local.Category
 import com.svetomir.spendly.data.local.Expense
 import com.svetomir.spendly.ui.currency.CurrencyConversionCard
 import com.svetomir.spendly.ui.util.formatAmount
 import com.svetomir.spendly.ui.util.formatDate
-import android.content.Intent
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.ui.platform.LocalContext
-import com.svetomir.spendly.AboutActivity
-import com.svetomir.spendly.data.local.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,16 +95,26 @@ fun ExpenseListScreen(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(
-                        onClick = { context.startActivity(Intent(context, AboutActivity::class.java)) },
+                        onClick = {
+                            context.startActivity(
+                                Intent(context, AboutActivity::class.java)
+                            )
+                        },
                     ) {
-                        Icon(Icons.Default.Info, contentDescription = stringResource(R.string.about))
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = stringResource(R.string.about)
+                        )
                     }
                 },
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddClick) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_expense))
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_expense)
+                )
             }
         },
     ) { innerPadding ->
@@ -156,6 +166,7 @@ private fun ExpenseListContent(
         }
     }
 }
+
 @Composable
 private fun TotalCard(total: Double) {
     Card(

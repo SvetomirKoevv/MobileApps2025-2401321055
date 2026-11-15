@@ -8,9 +8,8 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 
-class CurrencyRepositoryImpl @Inject constructor(
-    private val api: FrankfurterApi,
-) : CurrencyRepository {
+class CurrencyRepositoryImpl @Inject constructor(private val api: FrankfurterApi,) :
+    CurrencyRepository {
 
     override suspend fun getRates(): Result<RatesResponse> = try {
         Result.success(api.getLatestRates(base = BASE_CURRENCY))

@@ -23,9 +23,8 @@ data class CurrencyUiState(
 )
 
 @HiltViewModel
-class CurrencyViewModel @Inject constructor(
-    private val repository: CurrencyRepository,
-) : ViewModel() {
+class CurrencyViewModel @Inject constructor(private val repository: CurrencyRepository,) :
+    ViewModel() {
 
     private val _uiState = MutableStateFlow(CurrencyUiState())
     val uiState: StateFlow<CurrencyUiState> = _uiState.asStateFlow()

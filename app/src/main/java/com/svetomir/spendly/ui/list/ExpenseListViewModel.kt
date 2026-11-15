@@ -27,9 +27,8 @@ data class ExpenseListUiState(
 )
 
 @HiltViewModel
-class ExpenseListViewModel @Inject constructor(
-    private val repository: ExpenseRepository,
-) : ViewModel() {
+class ExpenseListViewModel @Inject constructor(private val repository: ExpenseRepository,) :
+    ViewModel() {
 
     private val searchQuery = MutableStateFlow("")
     private val selectedCategory = MutableStateFlow<Category?>(null)
@@ -41,7 +40,7 @@ class ExpenseListViewModel @Inject constructor(
     ) { expenses, query, category ->
         val filtered = expenses.filter { expense ->
             val matchesQuery = query.isBlank() ||
-                    expense.title.contains(query.trim(), ignoreCase = true)
+                expense.title.contains(query.trim(), ignoreCase = true)
             val matchesCategory = category == null || expense.category == category
             matchesQuery && matchesCategory
         }
