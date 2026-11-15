@@ -33,3 +33,9 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Release signing secrets (keystore itself is covered by *.jks / *.keystore above)
+keystore.properties
+
+# The graded release APK must be in the repository
+!apk/app-release.apk
