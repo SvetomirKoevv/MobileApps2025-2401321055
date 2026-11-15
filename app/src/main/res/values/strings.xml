@@ -4,4 +4,17 @@
     <string name="total_spent">Total spent</string>
     <string name="empty_title">No expenses yet</string>
     <string name="empty_hint">Tap + to add your first expense</string>
+    <string name="edit_expense">Edit expense</string>
+    <string name="back">Back</string>
+    <string name="title_label">Title</string>
+    <string name="amount_label">Amount</string>
+    <string name="category_label">Category</string>
+    <string name="date_label">Date</string>
+    <string name="note_label">Note (optional)</string>
+    <string name="pick_date">Pick date</string>
+    <string name="save">Save</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_error">Please enter a title</string>
+    <string name="amount_error">Enter an amount greater than 0</string>
 </resources>

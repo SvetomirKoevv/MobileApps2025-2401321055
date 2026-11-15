@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.svetomir.spendly.ui.addedit.AddEditExpenseScreen
 import com.svetomir.spendly.ui.list.ExpenseListScreen
 
 @Composable
@@ -25,7 +26,10 @@ fun SpendlyNavHost(navController: NavHostController = rememberNavController()) {
             PlaceholderScreen("Expense details")
         }
         composable<AddEditExpenseRoute> {
-            PlaceholderScreen("Add / edit expense")
+            AddEditExpenseScreen(
+                onBack = { navController.popBackStack() },
+                onSaved = { navController.popBackStack() },
+            )
         }
     }
 }

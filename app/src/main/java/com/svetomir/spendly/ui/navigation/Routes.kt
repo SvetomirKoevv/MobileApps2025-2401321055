@@ -9,4 +9,4 @@ object ExpenseListRoute
 data class ExpenseDetailRoute(val expenseId: Long)
 
 @Serializable
-data class AddEditExpenseRoute(val expenseId: Long? = null)
+data class AddEditExpenseRoute(val expenseId: Long = 0L)
