@@ -218,8 +218,6 @@ Release APK се подписва с ключ от `keystore.properties`, кой
 
 ## Скрийншотове
 
-Скрийншотите са направени в тъмна тема на POCO F6.
-
 | Списък с разходи и валута | Добавяне | Детайли |
 | --- | --- | --- |
 | <img src="docs/images/list.webp" alt="Списък с разходи, обща сума и конвертиране на валута" width="250" height="535"> | <img src="docs/images/add.webp" alt="Форма за добавяне" width="250" height="535"> | <img src="docs/images/details.webp" alt="Детайли за разход" width="250" height="535"> |
