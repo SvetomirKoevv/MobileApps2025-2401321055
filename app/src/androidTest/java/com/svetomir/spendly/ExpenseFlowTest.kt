@@ -1,6 +1,8 @@
 package com.svetomir.spendly
 
 import androidx.annotation.StringRes
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
@@ -46,8 +48,11 @@ class ExpenseFlowTest {
         composeRule.waitForIdle()
     }
 
+    /** Scrolls the vertical expense list (not the horizontal chip rows) and opens [title]. */
     private fun scrollToAndClick(title: String) {
-        composeRule.onNode(hasScrollToNodeAction()).performScrollToNode(hasText(title))
+        val verticalList = hasScrollToNodeAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        composeRule.onNode(verticalList).performScrollToNode(hasText(title))
         composeRule.onNodeWithText(title).performClick()
     }
 
