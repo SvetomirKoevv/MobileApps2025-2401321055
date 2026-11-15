@@ -25,4 +25,9 @@
     <string name="delete_message">\"%1$s\" will be removed.</string>
     <string name="expense_deleted">Expense deleted</string>
     <string name="undo">Undo</string>
+    <string name="converted_total">Total in other currency</string>
+    <string name="loading_rates">Loading exchange rates…</string>
+    <string name="rates_error">Couldn\'t load exchange rates. Check your internet connection.</string>
+    <string name="retry">Retry</string>
+    <string name="rates_date">ECB rates from %1$s</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.svetomir.spendly.di
 
+import com.svetomir.spendly.data.repository.CurrencyRepository
+import com.svetomir.spendly.data.repository.CurrencyRepositoryImpl
 import com.svetomir.spendly.data.repository.ExpenseRepository
 import com.svetomir.spendly.data.repository.ExpenseRepositoryImpl
 import dagger.Binds
@@ -15,4 +17,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindExpenseRepository(impl: ExpenseRepositoryImpl): ExpenseRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCurrencyRepository(impl: CurrencyRepositoryImpl): CurrencyRepository
 }

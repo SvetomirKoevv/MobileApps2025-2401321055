@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.svetomir.spendly.R
 import com.svetomir.spendly.data.local.Expense
+import com.svetomir.spendly.ui.currency.CurrencyConversionCard
 import com.svetomir.spendly.ui.util.formatAmount
 import com.svetomir.spendly.ui.util.formatDate
 
@@ -111,6 +112,7 @@ private fun ExpenseListContent(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item { TotalCard(total = uiState.total) }
+            item { CurrencyConversionCard(totalInEur = uiState.total) }
             items(items = uiState.expenses, key = { it.id }) { expense ->
                 ExpenseItem(expense = expense, onClick = { onExpenseClick(expense.id) })
             }

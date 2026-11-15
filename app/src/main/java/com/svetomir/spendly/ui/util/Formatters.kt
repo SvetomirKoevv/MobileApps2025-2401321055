@@ -8,3 +8,6 @@ fun formatAmount(amount: Double): String = String.format(Locale.US, "%.2f €", 
 
 fun formatDate(millis: Long): String =
     SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date(millis))
+
+fun formatMoney(amount: Double, currencyCode: String): String =
+    String.format(Locale.US, "%.2f %s", amount, currencyCode)
