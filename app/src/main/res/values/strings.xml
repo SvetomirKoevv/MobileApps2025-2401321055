@@ -17,4 +17,12 @@
     <string name="cancel">Cancel</string>
     <string name="title_error">Please enter a title</string>
     <string name="amount_error">Enter an amount greater than 0</string>
+    <string name="expense_details">Expense details</string>
+    <string name="expense_not_found">This expense no longer exists</string>
+    <string name="note">Note</string>
+    <string name="delete">Delete</string>
+    <string name="delete_title">Delete expense?</string>
+    <string name="delete_message">\"%1$s\" will be removed.</string>
+    <string name="expense_deleted">Expense deleted</string>
+    <string name="undo">Undo</string>
 </resources>
